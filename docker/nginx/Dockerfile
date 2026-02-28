@@ -1,7 +1,7 @@
 # Custom Nginx build with additional modules
 FROM alpine:latest AS nginx-base
 
-ARG NGINX_VERSION=1.29.1
+ARG NGINX_VERSION=1.29.5
 
 WORKDIR /app
 
