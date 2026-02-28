@@ -93,7 +93,7 @@ services:
       - DB_PORT=${DB_PORT:-3306}
       - DB_PREFIX=${DB_PREFIX:-oc_}
     volumes:
-      - .:/var/www
+      - www-data:/var/www
     depends_on:
       mysql:
         condition: service_healthy
@@ -256,7 +256,7 @@ services:
     #  - opencart
 
 volumes:
-  - www-data:
+  www-data:
   mysql-data:
   postgres-data:
   redis-data:
