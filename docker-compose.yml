@@ -186,7 +186,7 @@ services:
     profiles: [redis]
     ports:
       - "${CACHE_EXPOSE_PORT:-6379}:${CACHE_PORT:-6379}"
-    enviroment:
+    environment:
       - TZ=${TZ:-UTC}
     volumes:
       - redis-data:/data
