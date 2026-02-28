@@ -11,7 +11,7 @@ services:
     environment:
       - TZ=${TZ:-UTC}
     volumes:
-      - .:/var/www
+      - www-data:/var/www
     depends_on:
       php:
         condition: service_healthy
@@ -256,6 +256,7 @@ services:
     #  - opencart
 
 volumes:
+  - www-data:
   mysql-data:
   postgres-data:
   redis-data:
