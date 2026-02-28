@@ -25,8 +25,8 @@ services:
       options:
         max-size: "10m"
         max-file: "3"
-    networks:
-      - opencart
+    #networks:
+    #  - opencart
 
 #  nginx:
 #    container_name: opencart-nginx
@@ -107,8 +107,8 @@ services:
       options:
         max-size: "10m"
         max-file: "3"
-    networks:
-      - opencart
+    #networks:
+    #  - opencart
 
   mysql:
     container_name: opencart-mysql
@@ -140,8 +140,8 @@ services:
       options:
         max-size: "10m"
         max-file: "3"
-    networks:
-      - opencart
+    #networks:
+    #  - opencart
 
   postgres:
     container_name: opencart-postgres
@@ -167,8 +167,8 @@ services:
       options:
         max-size: "10m"
         max-file: "3"
-    networks:
-      - opencart
+    #networks:
+    #  - opencart
 
   redis:
     container_name: opencart-redis
@@ -190,8 +190,8 @@ services:
       options:
         max-size: "10m"
         max-file: "3"
-    networks:
-      - opencart
+    #networks:
+    #  - opencart
 
   memcached:
     container_name: opencart-memcached
@@ -211,8 +211,8 @@ services:
       options:
         max-size: "10m"
         max-file: "3"
-    networks:
-      - opencart
+    #networks:
+    #  - opencart
 
   adminer:
     container_name: opencart-adminer
@@ -237,15 +237,15 @@ services:
       options:
         max-size: "10m"
         max-file: "3"
-    networks:
-      - opencart
+    #networks:
+    #  - opencart
 
 volumes:
   mysql-data:
   postgres-data:
   redis-data:
 
-networks:
-  opencart:
-    driver: bridge
-    name: opencart-network
+#networks:
+#  opencart:
+#    driver: bridge
+#    name: opencart-network
