@@ -8,6 +8,8 @@ services:
       dockerfile: docker/apache/Dockerfile
     #ports:
     #  - "${HTTP_EXPOSE_PORT:-80}:${HTTP_PORT:-80}"
+    environment:
+      - TZ=${TZ:-UTC}
     volumes:
       - .:/var/www
     depends_on:
@@ -122,6 +124,7 @@ services:
     ports:
       - "${DB_EXPOSE_PORT:-3306}:${DB_PORT:-3306}"
     environment:
+      - TZ=${TZ:-UTC}
       - MARIADB_ROOT_PASSWORD=${DB_ROOT_PASSWORD:-opencart}
       - MARIADB_DATABASE=${DB_DATABASE:-opencart}
       - MARIADB_USER=${DB_USERNAME:-opencart}
@@ -156,6 +159,7 @@ services:
     ports:
       - "${DB_EXPOSE_PORT:-5432}:${DB_PORT:-5432}"
     environment:
+      - TZ=${TZ:-UTC}
       - POSTGRES_USER=${DB_USERNAME:-postgres}
       - POSTGRES_PASSWORD=${DB_PASSWORD:-opencart}
       - POSTGRES_DB=${DB_DATABASE:-opencart}
@@ -182,6 +186,8 @@ services:
     profiles: [redis]
     ports:
       - "${CACHE_EXPOSE_PORT:-6379}:${CACHE_PORT:-6379}"
+    enviroment:
+      - TZ=${TZ:-UTC}
     volumes:
       - redis-data:/data
     deploy:
@@ -205,6 +211,8 @@ services:
     profiles: [memcached]
     ports:
       - "${CACHE_EXPOSE_PORT:-11211}:${CACHE_PORT:-11211}"
+    environment:
+      - TZ=${TZ:-UTC}
     deploy:
       resources:
         limits:
@@ -227,6 +235,7 @@ services:
     ports:
       - "${ADMINER_EXPOSE_PORT:-8080}:${ADMINER_PORT:-8080}"
     environment:
+      - TZ=${TZ:-UTC}
       - ADMINER_DEFAULT_SERVER=mysql
     depends_on:
       mysql:
