@@ -146,7 +146,7 @@ services:
     container_name: opencart-redis
     image: redis:latest
     profiles: [redis]
-    ports:
+    #ports:
     #  - "${CACHE_EXPOSE_PORT:-6379}:${CACHE_PORT:-6379}"
     volumes:
       - redis-data:/data
