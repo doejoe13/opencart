@@ -1,7 +1,7 @@
 FROM httpd:2.4-alpine
 
-# Install curl (for healthcheck) and bash
-RUN apk update && apk add --no-cache curl bash
+# Install curl (for healthcheck), bash, and tzdata (for TZ environment variable)
+RUN apk update && apk add --no-cache curl bash tzdata
 
 COPY docker/apache/conf/httpd.conf /usr/local/apache2/conf/httpd.conf
 
