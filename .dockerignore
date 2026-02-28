@@ -3,10 +3,8 @@
 .gitignore
 .gitattributes
 
-# Docker
-.dockerignore
+# Docker Compose files (Not the folder!)
 docker-compose*.yml
-docker
 
 # IDE
 .vscode
