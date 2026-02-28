@@ -8,7 +8,7 @@ services:
       dockerfile: docker/apache/Dockerfile
     #ports:
     #  - "${HTTP_EXPOSE_PORT:-80}:${HTTP_PORT:-80}"
-    enviromnent:
+    environment:
       - TZ=${TZ:-UTC}
     volumes:
       - .:/var/www
