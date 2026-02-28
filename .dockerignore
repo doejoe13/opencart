@@ -6,6 +6,7 @@
 # Docker
 .dockerignore
 docker-compose*.yml
+docker
 
 # IDE
 .vscode
