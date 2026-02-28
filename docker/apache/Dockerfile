@@ -1,5 +1,8 @@
 FROM httpd:2.4-alpine
 
+# Install curl (for healthcheck) and bash
+RUN apk update && apk add --no-cache curl bash
+
 COPY docker/apache/conf/httpd.conf /usr/local/apache2/conf/httpd.conf
 
 RUN mkdir -p /usr/local/apache2/conf/sites-available
