@@ -4,6 +4,16 @@ set -e
 echo "--- OpenCart initialization ---"
 
 # ================================================================
+# PRE-STEP: WAIT FOR DATABASE
+# ================================================================
+# This prevents the "Connection refused" error
+echo "--- Waiting for database ($DB_HOSTNAME:$DB_PORT) to be ready... ---"
+while ! nc -z "$DB_HOSTNAME" "$DB_PORT"; do
+  sleep 1
+done
+echo "--- Database is ready! ---"
+
+# ================================================================
 # STEP 1: SYNC ENVIRONMENT VARIABLES TO EXISTING CONFIGS
 # ================================================================
 
@@ -13,27 +23,22 @@ cd /var/www/upload
 CONFIG_FILE="config.php"
 ADMIN_CONFIG_FILE="admin/config.php"
 
-# Function to update a config value only if it differs from the environment variable
+# Function to update a config value
 update_config_if_changed() {
     local file=$1
     local key=$2
     local env_value=$3
 
-    # Ensure the file exists and is not empty
     if [ ! -f "$file" ] || [ ! -s "$file" ]; then
         return
     fi
 
-    # Extract the current value
+    # Use | as delimiter for sed to avoid issues with passwords containing /
     local current_value=$(grep "define('$key'" "$file" | sed -n "s/.*define('$key',[ ]*'\([^']*\)').*$/\1/p")
 
-    # Update only if the value has changed
     if [ "$current_value" != "$env_value" ]; then
-        echo "--- Value for '$key' in '$file' is outdated. Updating '$current_value' -> '$env_value' ---"
-
-        sed -i "s/define('$key',[ ]*'[^']*')/define('$key', '$env_value')/g" "$file"
-
-        echo "--- Updated '$key' to '$env_value' in '$file' ---"
+        echo "--- Updating '$key' in '$file' ---"
+        sed -i "s|define('$key',[ ]*'[^']*')|define('$key', '$env_value')|g" "$file"
     fi
 }
 
@@ -97,7 +102,6 @@ fi
 # STEP 3: SETUP WEB SERVER FILES
 # ================================================================
 
-# Copy .htaccess.txt to .htaccess if needed
 if [ -f ".htaccess.txt" ] && [ ! -f ".htaccess" ]; then
     cp ".htaccess.txt" ".htaccess"
     echo "--- STEP 3: Copied .htaccess.txt to .htaccess ---"
@@ -107,12 +111,10 @@ fi
 # STEP 4: FIX FILE PERMISSIONS
 # ================================================================
 
-# Fix ownership for all files by targeting the real directory.
 echo "--- STEP 4: Fixing ownership on /var/www/upload ---"
 chown -R www-data:www-data /var/www/upload
 echo "--- Ownership fixed ---"
 
-# Set permissions for storage relocation
 echo "--- STEP 4: Setting permissions for storage relocation ---"
 chown www-data:www-data /var/www
 chmod 775 /var/www
@@ -122,25 +124,23 @@ chmod 775 /var/www
 # ================================================================
 echo "--- STEP 5: Setting up cron ---"
 
-cp /var/www/docker/php/cron/crontab /etc/cron.d/opencart
+# Copy from the system path defined in Dockerfile
+if [ -f /etc/cron.d/opencart_tmp ]; then
+    cp /etc/cron.d/opencart_tmp /etc/cron.d/opencart
+    chmod 0644 /etc/cron.d/opencart
+    echo "--- Cron installed ---"
+fi
 
-# Give execution rights on the cron job
-chmod 0644 /etc/cron.d/opencart
-
-# Create cron log file with proper permissions
+# Create cron log file
 touch /var/log/cron.log
 chown www-data:www-data /var/log/cron.log
 chmod 644 /var/log/cron.log
-
-echo "--- Cron setup finished ---"
 
 # ================================================================
 # STEP 6: START SUPERVISOR
 # ================================================================
 
 echo "--- STEP 6: Starting Supervisor ---"
-# Create supervisor run and log directories
 mkdir -p /var/run/supervisor /var/log/supervisor
 
-# Execute the CMD from the Dockerfile (or the command passed to docker run)
 exec "$@"
