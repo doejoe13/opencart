@@ -5,7 +5,7 @@ services:
     build:
       context: .
       dockerfile: docker/nginx/Dockerfile
-      target: ${OPENCART_ENV:-development}
+      target: ${OPENCART_ENV}
     #ports:
     #  - "${HTTP_EXPOSE_PORT:-80}:80"
     volumes:
