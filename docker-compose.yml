@@ -1,66 +1,38 @@
 name: opencart
-
 services:
-  apache:
-    container_name: opencart-apache
+  nginx:
+    container_name: opencart-nginx
     build:
       context: .
-      dockerfile: docker/apache/Dockerfile
+      dockerfile: docker/nginx/Dockerfile
+  target: ${OPENCART_ENV:-development}
     ports:
-      - "${HTTP_EXPOSE_PORT:-80}:${HTTP_PORT:-80}"
-    volumes:
-      - .:/var/www
-    depends_on:
-      php:
-        condition: service_healthy
+    - "${HTTP_EXPOSE_PORT:-80}:80"
+  volumes:
+    - .:/var/www
+  depends_on:
+    php:
+  condition: service_healthy
+  healthcheck:
+    test: ["CMD", "curl", "-f", "http://localhost/"]
+    interval: 30s
+    timeout: 10s
+    retries: 3
+      start_period: 40s
     deploy:
       resources:
-        limits:
-          memory: 128M
-          cpus: '0.25'
-        reservations:
-          memory: 64M
-    logging:
-      driver: "json-file"
+      limits:
+      memory: 256M
+      cpus: '0.5'
+  reservations:
+    memory: 128M
+  logging:
+    driver: "json-file"
       options:
         max-size: "10m"
         max-file: "3"
-    networks:
-      - opencart
-
-#  nginx:
-#    container_name: opencart-nginx
-#    build:
-#      context: .
-#      dockerfile: docker/nginx/Dockerfile
-#      target: ${OPENCART_ENV:-development}
-#    ports:
-#      - "${HTTP_EXPOSE_PORT:-80}:80"
-#    volumes:
-#      - .:/var/www
-#    depends_on:
-#      php:
-#        condition: service_healthy
-#    healthcheck:
-#      test: ["CMD", "curl", "-f", "http://localhost/"]
-#      interval: 30s
-#      timeout: 10s
-#      retries: 3
-#      start_period: 40s
-#    deploy:
-#      resources:
-#        limits:
-#          memory: 256M
-#          cpus: '0.5'
-#        reservations:
-#          memory: 128M
-#    logging:
-#      driver: "json-file"
-#      options:
-#        max-size: "10m"
-#        max-file: "3"
-#    networks:
-#      - opencart
+  networks:
+    - opencart
 
   php:
     container_name: opencart-php
